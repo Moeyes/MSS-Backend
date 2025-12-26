@@ -1,0 +1,8 @@
+fastapi>=0.127.0
+uvicorn[standard]>=0.40.0
+pydantic>=2.9.0  # Raised to capture recent v2 improvements; 2.12.5 is latest
+sqlalchemy>=2.0  # Latest is 2.0.45; no 2.1 series exists yet
+alembic>=1.13.0  # Latest is 1.17.2
+python-dotenv>=1.0.1  # Latest is 1.2.1
+httpx>=0.27.0  # You're already close; latest is 0.28.1
+pytest>=8.3.0  # Latest is 9.0.2; 8.x for more conservative compatibility if needed
