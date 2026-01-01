@@ -1,5 +1,6 @@
-title V3 - Athletics Management System
+title V4 - Athletics Management System
 
+// OGS or Provinces
 Organization [icon: building, color: blue] {
   id Int pk
   name VARCHAR(100)
@@ -16,6 +17,7 @@ Users [icon: users, color: orange] {
   createdAt TIMESTAMP
 }
 
+// Register any Leader and Althletics by USERS
 Enroll [icon: user-plus, color: red] {
   id Int pk
   name VARCHAR(100)
@@ -28,6 +30,7 @@ Enroll [icon: user-plus, color: red] {
   userID Int fk
 }
 
+// Leaders of each Orgs/Provinces
 Leaders [icon: crown, color: brown] {
   id Int pk
   enrollID Int fk
@@ -35,7 +38,7 @@ Leaders [icon: crown, color: brown] {
   phoneNumber VARCHAR(20) unique
   createdAt TIMESTAMP
 }
-
+// Athletics of each Orgs/Provinces
 Athletics [icon: runner, color: green] {
   id Int pk
   enrollID Int fk
@@ -44,34 +47,42 @@ Athletics [icon: runner, color: green] {
   createdAt TIMESTAMP
 }
 
+// a collective or types of sports CRUD By super ADMIN
 Sports [icon: basketball, color: purple] {
   id Int pk
   name VARCHAR(50)
   createdAt TIMESTAMP
 }
 
+// a collective or types of Events/GAMES CRUD By super ADMIN
 Events [icon: calendar, color: yellow] {
   id Int pk
   name VARCHAR(80)
+  date DATE
   createdAt TIMESTAMP
 }
 
+// Leader 
 LeaderSports {
+  id Int pk
   leaderID Int fk
   sportID Int fk
 }
 
 LeaderEvents {
+  id Int pk
   leaderID Int fk
   eventID Int fk
 }
 
 AthleteSports {
+  id Int pk
   athleticsID Int fk
   sportID Int fk
 }
 
 AthleteEvents {
+  id Int pk
   athleticsID Int fk
   eventID Int fk
 }
@@ -85,7 +96,6 @@ Enroll.userID > Users.UserID             // Optional user account link
 
 LeaderSports.leaderID > Leaders.id
 LeaderSports.sportID > Sports.id
-LeaderSports <> Sports.id             // Many-to-many shortcut (alternative)
 
 LeaderEvents.leaderID > Leaders.id
 LeaderEvents.eventID > Events.id
