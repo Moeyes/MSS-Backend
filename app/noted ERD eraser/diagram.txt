@@ -4,12 +4,12 @@ Organization [icon: building, color: blue] {
   id Int pk
   name VARCHAR(100)
   createdAt TIMESTAMP
-  leaderID Int
-  athleticsID Int
+  leaderID Int fk
+  athleticsID Int fk
 }
 
 Users [icon: users, color: orange] {
-  id Int pk
+  UserID Int pk
   username VARCHAR(20)
   password VARCHAR(255)
   userLevel Int
@@ -25,12 +25,12 @@ Enroll [icon: user-plus, color: red] {
   idCard VARCHAR(25)
   address VARCHAR(150)
   createdAt TIMESTAMP
-  userID Int
+  userID Int fk
 }
 
 Leaders [icon: crown, color: brown] {
   id Int pk
-  enrollID Int unique
+  enrollID Int fk
   class VARCHAR(50)
   phoneNumber VARCHAR(20) unique
   createdAt TIMESTAMP
@@ -38,7 +38,7 @@ Leaders [icon: crown, color: brown] {
 
 Athletics [icon: runner, color: green] {
   id Int pk
-  enrollID Int unique
+  enrollID Int fk
   class VARCHAR(50)
   uniformSize VARCHAR(4)
   createdAt TIMESTAMP
@@ -57,23 +57,23 @@ Events [icon: calendar, color: yellow] {
 }
 
 LeaderSports {
-  leaderID Int pk
-  sportID Int pk
+  leaderID Int fk
+  sportID Int fk
 }
 
 LeaderEvents {
-  leaderID Int pk
-  eventID Int pk
+  leaderID Int fk
+  eventID Int fk
 }
 
 AthleteSports {
-  athleticsID Int pk
-  sportID Int pk
+  athleticsID Int fk
+  sportID Int fk
 }
 
 AthleteEvents {
-  athleticsID Int pk
-  eventID Int pk
+  athleticsID Int fk
+  eventID Int fk
 }
 
 // Relationships
@@ -81,7 +81,7 @@ Enroll.id - Leaders.enrollID          // 1:1 (person is leader)
 Enroll.id - Athletics.enrollID        // 1:1 (person is athlete)
 Leaders.id > Organization.leaderID    // Many orgs can have same leader? (or reverse if 1 leader per org)
 Athletics.id > Organization.athleticsID
-Enroll.userID > Users.id              // Optional user account link
+Enroll.userID > Users.UserID             // Optional user account link
 
 LeaderSports.leaderID > Leaders.id
 LeaderSports.sportID > Sports.id
