@@ -1,0 +1,97 @@
+title V3 - Athletics Management System
+
+Organization [icon: building, color: blue] {
+  id Int pk
+  name VARCHAR(100)
+  createdAt TIMESTAMP
+  leaderID Int
+  athleticsID Int
+}
+
+Users [icon: users, color: orange] {
+  id Int pk
+  username VARCHAR(20)
+  password VARCHAR(255)
+  userLevel Int
+  createdAt TIMESTAMP
+}
+
+Enroll [icon: user-plus, color: red] {
+  id Int pk
+  name VARCHAR(100)
+  gender VARCHAR(10)
+  nationality VARCHAR(25)
+  dob DATE
+  idCard VARCHAR(25)
+  address VARCHAR(150)
+  createdAt TIMESTAMP
+  userID Int
+}
+
+Leaders [icon: crown, color: brown] {
+  id Int pk
+  enrollID Int unique
+  class VARCHAR(50)
+  phoneNumber VARCHAR(20) unique
+  createdAt TIMESTAMP
+}
+
+Athletics [icon: runner, color: green] {
+  id Int pk
+  enrollID Int unique
+  class VARCHAR(50)
+  uniformSize VARCHAR(4)
+  createdAt TIMESTAMP
+}
+
+Sports [icon: basketball, color: purple] {
+  id Int pk
+  name VARCHAR(50)
+  createdAt TIMESTAMP
+}
+
+Events [icon: calendar, color: yellow] {
+  id Int pk
+  name VARCHAR(80)
+  createdAt TIMESTAMP
+}
+
+LeaderSports {
+  leaderID Int pk
+  sportID Int pk
+}
+
+LeaderEvents {
+  leaderID Int pk
+  eventID Int pk
+}
+
+AthleteSports {
+  athleticsID Int pk
+  sportID Int pk
+}
+
+AthleteEvents {
+  athleticsID Int pk
+  eventID Int pk
+}
+
+// Relationships
+Enroll.id - Leaders.enrollID          // 1:1 (person is leader)
+Enroll.id - Athletics.enrollID        // 1:1 (person is athlete)
+Leaders.id > Organization.leaderID    // Many orgs can have same leader? (or reverse if 1 leader per org)
+Athletics.id > Organization.athleticsID
+Enroll.userID > Users.id              // Optional user account link
+
+LeaderSports.leaderID > Leaders.id
+LeaderSports.sportID > Sports.id
+LeaderSports <> Sports.id             // Many-to-many shortcut (alternative)
+
+LeaderEvents.leaderID > Leaders.id
+LeaderEvents.eventID > Events.id
+
+AthleteSports.athleticsID > Athletics.id
+AthleteSports.sportID > Sports.id
+
+AthleteEvents.athleticsID > Athletics.id
+AthleteEvents.eventID > Events.id
