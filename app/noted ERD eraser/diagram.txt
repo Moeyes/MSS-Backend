@@ -1,107 +1,132 @@
-title V4 - Athletics Management System
+  // Athletics Management System V4
 
-// OGS or Provinces
-Organization [icon: building, color: blue] {
-  id Int pk
-  name VARCHAR(100)
-  createdAt TIMESTAMP
-  leaderID Int fk
-  athleticsID Int fk
-}
+  // Core entities managed by Super Admin
+  Organization [icon: building, color: blue] {
+    id int pk
+    name string
+    createdAt timestamp
+  }
 
-Users [icon: users, color: orange] {
-  UserID Int pk
-  username VARCHAR(20)
-  password VARCHAR(255)
-  userLevel Int
-  createdAt TIMESTAMP
-}
+  Sports [icon: basketball, color: purple] {
+    id int pk
+    name string
+    createdAt timestamp
+  }
 
-// Register any Leader and Althletics by USERS
-Enroll [icon: user-plus, color: red] {
-  id Int pk
-  name VARCHAR(100)
-  gender VARCHAR(10)
-  nationality VARCHAR(25)
-  dob DATE
-  idCard VARCHAR(25)
-  address VARCHAR(150)
-  createdAt TIMESTAMP
-  userID Int fk
-}
+  Events [icon: calendar-check, color: yellow] {
+    id int pk
+    name string
+    date date
+    createdAt timestamp
+  }
 
-// Leaders of each Orgs/Provinces
-Leaders [icon: crown, color: brown] {
-  id Int pk
-  enrollID Int fk
-  class VARCHAR(50)
-  phoneNumber VARCHAR(20) unique
-  createdAt TIMESTAMP
-}
-// Athletics of each Orgs/Provinces
-Athletics [icon: runner, color: green] {
-  id Int pk
-  enrollID Int fk
-  class VARCHAR(50)
-  uniformSize VARCHAR(4)
-  createdAt TIMESTAMP
-}
+  // System users
+  Users [icon: users, color: orange] {
+    UserID int pk
+    username string
+    password string
+    userLevel int
+    createdAt timestamp
+  }
 
-// a collective or types of sports CRUD By super ADMIN
-Sports [icon: basketball, color: purple] {
-  id Int pk
-  name VARCHAR(50)
-  createdAt TIMESTAMP
-}
+  // Central person registry (enrolled people)
+  Enroll [icon: user-plus, color: red] {
+    id int pk
+    name string
+    gender string
+    nationality string
+    dob date
+    idCard string
+    address string
+    createdAt timestamp
+    userID int
+  }
 
-// a collective or types of Events/GAMES CRUD By super ADMIN
-Events [icon: calendar, color: yellow] {
-  id Int pk
-  name VARCHAR(80)
-  date DATE
-  createdAt TIMESTAMP
-}
+  // Roles
+  Leaders [icon: crown, color: brown] {
+    id int pk
+    enrollID int
+    class string
+    phoneNumber string unique
+    createdAt timestamp
+  }
 
-// Leader 
-LeaderSports {
-  id Int pk
-  leaderID Int fk
-  sportID Int fk
-}
+  Athletes [icon: person-running, color: green] {
+    id int pk
+    enrollID int
+    class string
+    uniformSize string
+    createdAt timestamp
+  }
 
-LeaderEvents {
-  id Int pk
-  leaderID Int fk
-  eventID Int fk
-}
+  // Many-to-Many junctions (fixed with both foreign keys)
 
-AthleteSports {
-  id Int pk
-  athleticsID Int fk
-  sportID Int fk
-}
+  // One Organization can have many Leaders and many Athletes
+  // One Leader/Athlete can belong to many Organizations
+  LeaderOrganization [icon: link, color: gray] {
+    id int pk
+    leaderID int
+    organizationID int
+  }
 
-AthleteEvents {
-  id Int pk
-  athleticsID Int fk
-  eventID Int fk
-}
+  AthleteOrganization [icon: link, color: gray] {
+    id int pk
+    athleteID int
+    organizationID int
+  }
 
-// Relationships
-Enroll.id - Leaders.enrollID          // 1:1 (person is leader)
-Enroll.id - Athletics.enrollID        // 1:1 (person is athlete)
-Leaders.id > Organization.leaderID    // Many orgs can have same leader? (or reverse if 1 leader per org)
-Athletics.id > Organization.athleticsID
-Enroll.userID > Users.UserID             // Optional user account link
+  // Leader ↔ Sports / Events (many-to-many)
+  LeaderSports [icon: link, color: gray] {
+    id int pk
+    leaderID int
+    sportID int
+  }
 
-LeaderSports.leaderID > Leaders.id
-LeaderSports.sportID > Sports.id
+  LeaderEvents [icon: link, color: gray] {
+    id int pk
+    leaderID int
+    eventID int
+  }
 
-LeaderEvents.leaderID > Leaders.id
-LeaderEvents.eventID > Events.id
+  // Athlete ↔ Sports / Events (many-to-many)
+  AthleteSports [icon: link, color: gray] {
+    id int pk
+    athleteID int
+    sportID int
+  }
 
-AthleteSports.athleticsID > Athletics.id
-AthleteSports.sportID > Sports.id
+  AthleteEvents [icon: link, color: gray] {
+    id int pk
+    athleteID int
+    eventID int
+  }
 
-AthleteEvents.athleticsID > Athletics.id
-AthleteEvents.eventID > Events.id
+  // Relationships (attribute-level where possible)
+
+  Enroll.userID > Users.UserID
+
+  // A person (Enroll) can be exactly one Leader (1:Many)
+  Enroll.id < Leaders.enrollID
+
+  // A person (Enroll) can be exactly one Athlete (1:Many)
+  Enroll.id < Athletes.enrollID
+
+  // Organization assignments
+  LeaderOrganization.leaderID > Leaders.id
+  LeaderOrganization.organizationID > Organization.id
+
+  AthleteOrganization.athleteID > Athletes.id
+  AthleteOrganization.organizationID > Organization.id
+
+  // Sports & Events assignments
+  LeaderSports.leaderID > Leaders.id
+  LeaderSports.sportID > Sports.id
+
+  LeaderEvents.leaderID > Leaders.id
+  LeaderEvents.eventID > Events.id
+
+  AthleteSports.athleteID > Athletes.id
+  AthleteSports.sportID > Sports.id
+
+  AthleteEvents.athleteID > Athletes.id
+  AthleteEvents.eventID > Events.id
